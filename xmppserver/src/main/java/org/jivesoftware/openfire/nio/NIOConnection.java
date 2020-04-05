@@ -46,6 +46,7 @@ import org.jivesoftware.openfire.Connection;
 import org.jivesoftware.openfire.ConnectionCloseListener;
 import org.jivesoftware.openfire.PacketDeliverer;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
+import org.jivesoftware.openfire.net.ProxyProtocolFilter;
 import org.jivesoftware.openfire.net.StanzaHandler;
 import org.jivesoftware.openfire.session.LocalSession;
 import org.jivesoftware.openfire.session.Session;
@@ -149,28 +150,52 @@ public class NIOConnection implements Connection {
 
     @Override
     public byte[] getAddress() throws UnknownHostException {
-        final SocketAddress remoteAddress = ioSession.getRemoteAddress();
-        if (remoteAddress == null) throw new UnknownHostException();
-        final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
-        final InetAddress address = socketAddress.getAddress();
+        InetAddress address;
+
+        String proxyAddress = (String)ioSession.getAttribute(ProxyProtocolFilter.PROXY_ADDRESS);
+        if (proxyAddress != null && proxyAddress.length() > 0) {
+            address = InetAddress.getByName(proxyAddress);
+        } else {
+            final SocketAddress remoteAddress = ioSession.getRemoteAddress();
+            if (remoteAddress == null) throw new UnknownHostException();
+            final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
+            address = socketAddress.getAddress(); 
+        }
+
         return address.getAddress();
     }
 
     @Override
     public String getHostAddress() throws UnknownHostException {
-        final SocketAddress remoteAddress = ioSession.getRemoteAddress();
-        if (remoteAddress == null) throw new UnknownHostException();
-        final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
-        final InetAddress inetAddress = socketAddress.getAddress();
+        InetAddress inetAddress;
+
+        String proxyAddress = (String)ioSession.getAttribute(ProxyProtocolFilter.PROXY_ADDRESS);
+        if (proxyAddress != null && proxyAddress.length() > 0) {
+            inetAddress = InetAddress.getByName(proxyAddress);
+        } else {
+            final SocketAddress remoteAddress = ioSession.getRemoteAddress();
+            if (remoteAddress == null) throw new UnknownHostException();
+            final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
+            inetAddress = socketAddress.getAddress();
+        }
+
         return inetAddress.getHostAddress();
     }
 
     @Override
     public String getHostName() throws UnknownHostException {
-        final SocketAddress remoteAddress = ioSession.getRemoteAddress();
-        if (remoteAddress == null) throw new UnknownHostException();
-        final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
-        final InetAddress inetAddress = socketAddress.getAddress();
+        InetAddress inetAddress;
+
+        String proxyAddress = (String)ioSession.getAttribute(ProxyProtocolFilter.PROXY_ADDRESS);
+        if (proxyAddress != null && proxyAddress.length() > 0) {
+            inetAddress = InetAddress.getByName(proxyAddress);
+        } else {
+            final SocketAddress remoteAddress = ioSession.getRemoteAddress();
+            if (remoteAddress == null) throw new UnknownHostException();
+            final InetSocketAddress socketAddress = (InetSocketAddress) remoteAddress;
+            inetAddress = socketAddress.getAddress();
+        }
+
         return inetAddress.getHostName();
     }
 

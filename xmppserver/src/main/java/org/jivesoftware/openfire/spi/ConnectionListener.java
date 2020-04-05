@@ -78,6 +78,12 @@ public class ConnectionListener
      */
     private final String clientAuthPolicyPropertyName;
 
+    /**
+     * Name of property that enables/disables proxy protocol support for this listener.
+     * 'null' indicates that support is disabled and should be used as a default.
+     */
+    private final String proxyProtocolPropertyName;
+
     // The entity that performs the acceptance of new (socket) connections.
     private ConnectionAcceptor connectionAcceptor;
 
@@ -102,8 +108,9 @@ public class ConnectionListener
      * @param identityStoreConfiguration the certificates the server identify as
      * @param trustStoreConfiguration the certificates the server trusts
      * @param compressionPolicyPropertyName the name of the system property indicating if compression is enabled or not
+     * @param proxyProtocolPropertyName the name of the system property indicating if proxy protocol support is enabled or not
      */
-    public ConnectionListener( ConnectionType type, String tcpPortPropertyName, int defaultPort, String isEnabledPropertyName, String maxPoolSizePropertyName, String maxReadBufferPropertyName, String tlsPolicyPropertyName, String clientAuthPolicyPropertyName, InetAddress bindAddress, CertificateStoreConfiguration identityStoreConfiguration, CertificateStoreConfiguration trustStoreConfiguration, String compressionPolicyPropertyName )
+    public ConnectionListener( ConnectionType type, String tcpPortPropertyName, int defaultPort, String isEnabledPropertyName, String maxPoolSizePropertyName, String maxReadBufferPropertyName, String tlsPolicyPropertyName, String clientAuthPolicyPropertyName, InetAddress bindAddress, CertificateStoreConfiguration identityStoreConfiguration, CertificateStoreConfiguration trustStoreConfiguration, String compressionPolicyPropertyName, String proxyProtocolPropertyName )
     {
         this.type = type;
         this.tcpPortPropertyName = tcpPortPropertyName;
@@ -117,6 +124,7 @@ public class ConnectionListener
         this.identityStoreConfiguration = identityStoreConfiguration;
         this.trustStoreConfiguration = trustStoreConfiguration;
         this.compressionPolicyPropertyName = compressionPolicyPropertyName;
+        this.proxyProtocolPropertyName = proxyProtocolPropertyName;
 
         // A listener cannot be changed into or from legacy mode. That fact is safe to use in the name of the logger..
         final String name = getType().toString().toLowerCase() + ( getTLSPolicy().equals( Connection.TLSPolicy.legacyMode ) ? "-legacyMode" : "" );
@@ -271,7 +279,8 @@ public class ConnectionListener
                 verifyCertificateValidity(),
                 getEncryptionProtocols(),
                 getEncryptionCipherSuites(),
-                getCompressionPolicy()
+                getCompressionPolicy(),
+                isProxyProtocolEnabled()
         );
     }
 
@@ -1014,6 +1023,21 @@ public class ConnectionListener
 
         Log.debug( "Changing cipher suite configuration from '{}' to '{}'.", oldValue, newValue );
         restart();
+    }
+
+    /**
+     * Return if the configuration enables proxy protocol support for this listener
+     *
+     * @return true if configuration allows proxy protocol support for this listener, otherwise false.
+     */
+    public boolean isProxyProtocolEnabled()
+    {
+        if (proxyProtocolPropertyName == null)
+        {
+            return false;
+        }
+
+        return JiveGlobals.getBooleanProperty(proxyProtocolPropertyName, false);
     }
 
     /**

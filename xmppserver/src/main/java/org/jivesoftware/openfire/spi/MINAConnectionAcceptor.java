@@ -14,6 +14,7 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.jivesoftware.openfire.Connection;
 import org.jivesoftware.openfire.JMXManager;
+import org.jivesoftware.openfire.net.ProxyProtocolFilter;
 import org.jivesoftware.openfire.net.StalledSessionsFilter;
 import org.jivesoftware.openfire.nio.*;
 import org.jivesoftware.util.JiveGlobals;
@@ -126,6 +127,11 @@ class MINAConnectionAcceptor extends ConnectionAcceptor
             {
                 final SslFilter sslFilter = encryptionArtifactFactory.createServerModeSslFilter();
                 filterChain.addAfter( ConnectionManagerImpl.EXECUTOR_FILTER_NAME, ConnectionManagerImpl.TLS_FILTER_NAME, sslFilter );
+            }
+
+            if ( configuration.isProxyProtocolEnabled() )
+            {
+                filterChain.addAfter( ConnectionManagerImpl.EXECUTOR_FILTER_NAME, ConnectionManagerImpl.PROXY_PROTOCOL_FILTER_NAME, new ProxyProtocolFilter() );
             }
 
             // Throttle sessions who send data too fast

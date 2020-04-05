@@ -37,6 +37,8 @@ public final class ConnectionSettings {
         @Deprecated
         public static final String KEEP_ALIVE_PING = KEEP_ALIVE_PING_PROPERTY.getKey();
 
+        public static final String PROXY_PROTOCOL = "xmpp.socket.proxyProtocol";
+
         public static final String TLS_POLICY = "xmpp.client.tls.policy";
         public static final String OLD_SSLPORT = "xmpp.socket.ssl.port";
         public static final SystemProperty<Boolean> ENABLE_OLD_SSLPORT_PROPERTY = SystemProperty.Builder.ofType(Boolean.class)
@@ -73,6 +75,8 @@ public final class ConnectionSettings {
         public static final String REMOTE_SERVER_PORT = "xmpp.server.socket.remotePort";
         public static final String SOCKET_READ_TIMEOUT = "xmpp.server.read.timeout";
 
+        public static final String PROXY_PROTOCOL = "xmpp.server.socket.proxyProtocol";
+
         public static final String QUEUE_MAX_THREADS = "xmpp.server.outgoing.max.threads";
         public static final String QUEUE_SIZE = "xmpp.server.outgoing.queue";
 
@@ -103,6 +107,8 @@ public final class ConnectionSettings {
         public static final String SOCKET_ACTIVE = "xmpp.multiplex.socket.active";
         public static final String PORT = "xmpp.multiplex.socket.port";
 
+        public static final String PROXY_PROTOCOL = "xmpp.multiplex.socket.proxyProtocol";
+
         public static final String TLS_POLICY = "xmpp.multiplex.tls.policy";
         public static final String COMPRESSION_SETTINGS = "xmpp.multiplex.compression.policy";
 
@@ -116,6 +122,7 @@ public final class ConnectionSettings {
     public static final class Component {
         public static final String SOCKET_ACTIVE = "xmpp.component.socket.active";
         public static final String PORT = "xmpp.component.socket.port";
+        public static final String PROXY_PROTOCOL = "xmpp.component.socket.proxyProtocol";
         public static final String OLD_SSLPORT = "xmpp.component.ssl.port";
         public static final SystemProperty<Boolean> ENABLE_OLD_SSLPORT_PROPERTY = SystemProperty.Builder.ofType(Boolean.class)
             .setKey("xmpp.component.ssl.active")

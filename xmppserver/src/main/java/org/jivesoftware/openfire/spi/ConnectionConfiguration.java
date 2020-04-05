@@ -31,6 +31,7 @@ public class ConnectionConfiguration
     private final Set<String> encryptionProtocols;
     private final Set<String> encryptionCipherSuites;
     private final Connection.CompressionPolicy compressionPolicy;
+    private final boolean proxyProtocol;
 
     // derived
     private final IdentityStore identityStore;
@@ -52,9 +53,10 @@ public class ConnectionConfiguration
      * @param encryptionProtocols the set of protocols supported
      * @param encryptionCipherSuites the set of ciphers supported
      * @param compressionPolicy the compression policy
+     * @param proxyProtocol is proxy protocol enabled
      */
     // TODO input validation
-    public ConnectionConfiguration( ConnectionType type, boolean enabled, int maxThreadPoolSize, int maxBufferSize, Connection.ClientAuth clientAuth, InetAddress bindAddress, int port, Connection.TLSPolicy tlsPolicy, CertificateStoreConfiguration identityStoreConfiguration, CertificateStoreConfiguration trustStoreConfiguration, boolean acceptSelfSignedCertificates, boolean verifyCertificateValidity, Set<String> encryptionProtocols, Set<String> encryptionCipherSuites, Connection.CompressionPolicy compressionPolicy )
+    public ConnectionConfiguration( ConnectionType type, boolean enabled, int maxThreadPoolSize, int maxBufferSize, Connection.ClientAuth clientAuth, InetAddress bindAddress, int port, Connection.TLSPolicy tlsPolicy, CertificateStoreConfiguration identityStoreConfiguration, CertificateStoreConfiguration trustStoreConfiguration, boolean acceptSelfSignedCertificates, boolean verifyCertificateValidity, Set<String> encryptionProtocols, Set<String> encryptionCipherSuites, Connection.CompressionPolicy compressionPolicy, boolean proxyProtocol )
     {
         if ( maxThreadPoolSize <= 0 ) {
             throw new IllegalArgumentException( "Argument 'maxThreadPoolSize' must be equal to or greater than one." );
@@ -78,6 +80,7 @@ public class ConnectionConfiguration
         this.encryptionProtocols = Collections.unmodifiableSet( encryptionProtocols );
         this.encryptionCipherSuites = Collections.unmodifiableSet( encryptionCipherSuites );
         this.compressionPolicy = compressionPolicy;
+        this.proxyProtocol = proxyProtocol;
 
         final CertificateStoreManager certificateStoreManager = XMPPServer.getInstance().getCertificateStoreManager();
         this.identityStore = certificateStoreManager.getIdentityStore( type );
@@ -200,5 +203,10 @@ public class ConnectionConfiguration
     public boolean isEnabled()
     {
         return enabled;
+    }
+
+    public boolean isProxyProtocolEnabled()
+    {
+        return proxyProtocol;
     }
 }

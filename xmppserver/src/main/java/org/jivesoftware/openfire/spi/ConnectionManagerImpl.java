@@ -50,6 +50,7 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
     public static final String COMPRESSION_FILTER_NAME = "compression";
     public static final String XMPP_CODEC_FILTER_NAME = "xmpp";
     public static final String CAPACITY_FILTER_NAME = "outCap";
+    public static final String PROXY_PROTOCOL_FILTER_NAME = "proxyProtocol";
 
     private static final Logger Log = LoggerFactory.getLogger(ConnectionManagerImpl.class);
 
@@ -114,7 +115,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.SOCKET_C2S ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.SOCKET_C2S ),
-                ConnectionSettings.Client.COMPRESSION_SETTINGS
+                ConnectionSettings.Client.COMPRESSION_SETTINGS,
+                ConnectionSettings.Client.PROXY_PROTOCOL
         );
         clientSslListener = new ConnectionListener(
                 ConnectionType.SOCKET_C2S,
@@ -128,7 +130,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.SOCKET_C2S ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.SOCKET_C2S ),
-                ConnectionSettings.Client.COMPRESSION_SETTINGS
+                ConnectionSettings.Client.COMPRESSION_SETTINGS,
+                ConnectionSettings.Client.PROXY_PROTOCOL
         );
         // BOSH / HTTP-bind
         boshListener = new ConnectionListener(
@@ -143,7 +146,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.BOSH_C2S ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.BOSH_C2S ),
-                ConnectionSettings.Client.COMPRESSION_SETTINGS // Existing code re-used the generic client compression property. Should we have a BOSH-specific one?
+                ConnectionSettings.Client.COMPRESSION_SETTINGS, // Existing code re-used the generic client compression property. Should we have a BOSH-specific one?
+                null
         );
         boshSslListener = new ConnectionListener(
                 ConnectionType.BOSH_C2S,
@@ -157,7 +161,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.BOSH_C2S ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.BOSH_C2S ),
-                ConnectionSettings.Client.COMPRESSION_SETTINGS // Existing code re-used the generic client compression property. Should we have a BOSH-specific one?
+                ConnectionSettings.Client.COMPRESSION_SETTINGS, // Existing code re-used the generic client compression property. Should we have a BOSH-specific one?
+                null
         );
         // server-to-server (federation)
         serverListener = new ConnectionListener(
@@ -172,7 +177,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.SOCKET_S2S ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.SOCKET_S2S ),
-                ConnectionSettings.Server.COMPRESSION_SETTINGS
+                ConnectionSettings.Server.COMPRESSION_SETTINGS,
+                ConnectionSettings.Server.PROXY_PROTOCOL
         );
         serverSslListener = new ConnectionListener(
             ConnectionType.SOCKET_S2S,
@@ -186,7 +192,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
             bindAddress,
             certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.SOCKET_S2S ),
             certificateStoreManager.getTrustStoreConfiguration( ConnectionType.SOCKET_S2S ),
-            ConnectionSettings.Server.COMPRESSION_SETTINGS
+            ConnectionSettings.Server.COMPRESSION_SETTINGS,
+            ConnectionSettings.Server.PROXY_PROTOCOL
         );
 
         // external components (XEP 0114)
@@ -202,7 +209,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.COMPONENT ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.COMPONENT ),
-                ConnectionSettings.Component.COMPRESSION_SETTINGS
+                ConnectionSettings.Component.COMPRESSION_SETTINGS,
+                ConnectionSettings.Component.PROXY_PROTOCOL
         );
         componentSslListener = new ConnectionListener(
                 ConnectionType.COMPONENT,
@@ -216,7 +224,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.COMPONENT ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.COMPONENT ),
-                ConnectionSettings.Component.COMPRESSION_SETTINGS
+                ConnectionSettings.Component.COMPRESSION_SETTINGS,
+                ConnectionSettings.Component.PROXY_PROTOCOL
         );
 
         // Multiplexers (our propertietary connection manager implementation)
@@ -232,7 +241,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.CONNECTION_MANAGER ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.CONNECTION_MANAGER ),
-                ConnectionSettings.Multiplex.COMPRESSION_SETTINGS
+                ConnectionSettings.Multiplex.COMPRESSION_SETTINGS,
+                ConnectionSettings.Multiplex.PROXY_PROTOCOL
         );
         connectionManagerSslListener = new ConnectionListener(
                 ConnectionType.CONNECTION_MANAGER,
@@ -246,7 +256,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 bindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.CONNECTION_MANAGER ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.CONNECTION_MANAGER ),
-                ConnectionSettings.Multiplex.COMPRESSION_SETTINGS
+                ConnectionSettings.Multiplex.COMPRESSION_SETTINGS,
+                ConnectionSettings.Multiplex.PROXY_PROTOCOL
         );
 
         // Admin console (the Openfire web-admin) // TODO these use the XML properties instead of normal properties!
@@ -262,7 +273,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 adminConsoleBindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.WEBADMIN ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.WEBADMIN ),
-                null // Should we have compression on the admin console?
+                null, // Should we have compression on the admin console?
+                null
         );
 
         webAdminSslListener = new ConnectionListener(
@@ -277,7 +289,8 @@ public class ConnectionManagerImpl extends BasicModule implements ConnectionMana
                 adminConsoleBindAddress,
                 certificateStoreManager.getIdentityStoreConfiguration( ConnectionType.WEBADMIN ),
                 certificateStoreManager.getTrustStoreConfiguration( ConnectionType.WEBADMIN ),
-                null // Should we have compression on the admin console?
+                null, // Should we have compression on the admin console?
+                null
         );
 
     }
